@@ -1,0 +1,22 @@
+id: opencode-2026-10
+title: OpenCode Console breach of linked AI provider keys
+date: 2026-10-16
+summary: >
+  OpenCode said on October 17, 2026 that a breach the night before affected
+  1.4% of OpenCode Console users who had external AI providers linked, and
+  that users who did not get its email were not affected.
+sources:
+  - name: OpenCode statement on X
+    url: https://x.com/i/status/2111519637049319818
+evidence:
+  files: [~/.local/share/opencode/auth.json, ~/.local/share/opencode/opencode.db, ~/.config/opencode/opencode.db]
+exposure:
+  scope: ai-keys
+  note: >
+    This only applies if OpenCode emailed you. The breach was in the Console,
+    not on your machine, so local files only tell you OpenCode is in use here.
+    AI provider keys on this machine are listed because they may be the same
+    keys you linked in the Console.
+actions:
+  - If OpenCode emailed you, rotate every AI provider key you linked in the Console.
+  - If it did not, OpenCode says you were not affected.

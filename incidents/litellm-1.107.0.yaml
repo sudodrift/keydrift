@@ -1,0 +1,31 @@
+id: litellm-1.107.0
+title: LiteLLM 1.107.0 on PyPI carried a credential stealer
+date: 2026-10-21
+summary: >
+  LiteLLM's release pipeline published a malicious litellm==1.107.0 to PyPI,
+  live from 11:39 to 13:23 UTC on October 21, 2026. The wheels added cook.pth,
+  cook.py and sitecustomize.py at the top of site-packages, so the stealer ran
+  every time Python started in that environment, even if nothing imported
+  litellm. cook.py collects credentials and sends them to www.litellm.dev.
+sources:
+  - name: LiteLLM incident post
+    url: https://docs.litellm.ai/blog/security-incident-oct-21-2026
+  - name: OSV MAL-2026-2144
+    url: https://osv.dev/vulnerability/MAL-2026-2144
+  - name: Microsoft Security Blog
+    url: https://www.microsoft.com/en-us/security/blog/2026/10/23/inside-the-litellm-1-107-0-supply-chain-compromise-credential-theft-through-python-startup-hooks/
+evidence:
+  python_packages:
+    - name: litellm
+      versions: ["1.107.0"]
+exposure:
+  scope: all-keys
+  note: >
+    The payload ran with your user's rights on every Python start, so treat
+    every key this machine can read as exposed, not only the ones keydrift
+    lists. That includes keys in the environment of running processes.
+actions:
+  - Do not start Python in the affected environment. Delete it and rebuild with litellm==1.106.2 pinned.
+  - Rotate from a different, clean machine, starting at the top of the list below.
+  - Check DNS and proxy logs for litellm.dev.
+  - For a full host check, run the 2026-10-litellm-1.107.0 script from github.com/sudodrift/breach-checks.

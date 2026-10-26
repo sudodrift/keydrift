@@ -1,0 +1,31 @@
+id: railway-2026-10
+title: Railway environment variables decrypted by an attacker
+date: 2026-10-21
+summary: >
+  Railway says that on October 21, 2026 an attacker reached its CI
+  environment and decrypted a subset of stored environment variables, at most
+  1.85% of workspaces. Railway says the attacker was mainly after AI provider
+  keys and tells every user to rotate what they stored on the platform.
+sources:
+  - name: Railway security disclosure
+    url: https://blog.railway.com/p/security-disclosure-wednesday-october-21st
+  - name: Railway preliminary report
+    url: https://blog.railway.com/p/preliminary-report-october-security-incident
+  - name: Railway advice on rotating PostgreSQL credentials
+    url: https://blog.railway.com/p/security-disclosure-recommendation-rotate-postgresql-database-credentials
+evidence:
+  files: [~/.railway/config.json]
+  linked_project_maps:
+    - file: ~/.railway/config.json
+      key: projects
+  project_files: [railway.json, railway.toml]
+  env_names: [RAILWAY_TOKEN, RAILWAY_API_TOKEN]
+exposure:
+  scope: project-folders
+  note: >
+    keydrift sees only local copies. Every variable you set in Railway's
+    dashboard counts as exposed, whether or not a copy sits on this machine.
+actions:
+  - Revoke each key at its provider first. Changing the variable on Railway does not kill the old key.
+  - Set the new value on Railway and redeploy; containers read variables only at startup.
+  - For Railway Postgres, use Regenerate instead of ALTER USER.

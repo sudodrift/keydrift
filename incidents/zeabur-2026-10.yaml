@@ -1,0 +1,25 @@
+id: zeabur-2026-10
+title: Zeabur environment variables read from the platform database
+date: 2026-10-14
+summary: >
+  Zeabur says an attacker used plaintext internal AWS keys and Kubernetes
+  admin tokens on October 14 and 15, 2026 and read 3,218,965 environment
+  variable records (names and values) from its platform database, along with
+  data in 865 customer database containers. Zeabur tells every user to rotate
+  what they stored on the platform.
+sources:
+  - name: Zeabur October 2026 security incident
+    url: https://zeabur.com/blogs/october-2026-security-incident
+evidence:
+  files: [~/.config/zeabur/cli.yaml]
+  project_files: [zbpack.json]
+  project_file_globs: ['zbpack.*.json']
+exposure:
+  scope: project-folders
+  note: >
+    keydrift sees only local copies. Every variable you set on Zeabur counts
+    as exposed, whether or not a copy sits on this machine.
+actions:
+  - Revoke each key at its provider first, then update the variable on Zeabur and redeploy.
+  - Change database passwords inside the database, not only the variable.
+  - If you ran n8n on Zeabur's shared cluster, replace the n8n encryption key and recreate its credentials.

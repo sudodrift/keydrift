@@ -1,0 +1,65 @@
+id: ovhcloud-cli-2026-10
+title: Swapped ovhcloud-cli release binaries stole local credentials
+date: 2026-10-19
+summary: >
+  On October 19, 2026, between 12:47 and 14:21 UTC, a compromised OVHcloud
+  developer account replaced the release files of ovhcloud-cli v0.11.0 to
+  v0.15.0 with builds that copy credentials into an envchecker-<digits> folder
+  in the temp folder and send them out. The advisory lists the files the
+  stealer collects; those are the paths below.
+sources:
+  - name: OVHcloud advisory GHSA-862f-55f5-vmvw
+    url: https://github.com/ovh/ovhcloud-cli/security/advisories/GHSA-862f-55f5-vmvw
+evidence:
+  binaries:
+    names: [ovhcloud]
+    md5:
+      - 6f2f086239f3d88eb2750e871901927d
+      - 347e65eb7f2d78d1c6872690272a6cc3
+      - 01f57206d37c28cf711677f612052913
+      - 301bff0b51980b9e76c93633e7cfd3bd
+      - 6a3cf153338c416169cda2fe704c8848
+  tmp_dirs: ['envchecker-[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]', 'envchecker-[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]']
+exposure:
+  scope: paths
+  # "Resources gathered by the malware" in the advisory, plus ~/.npmrc for
+  # the advisory's "NPM configuration" line, which has no path in its list.
+  paths:
+    - ~/.config/Code/User/globalStorage/state.vscdb
+    - ~/.config/Cursor/User/globalStorage/state.vscdb
+    - ~/.config/Code/User/globalStorage/continue.continue/index/index.sqlite
+    - ~/.config/Cursor/User/globalStorage/continue.continue/index/index.sqlite
+    - ~/.config/Code/User/globalStorage/sourcegraph.cody-ai/chat/chat-history.db
+    - ~/.config/Cursor/User/globalStorage/sourcegraph.cody-ai/chat/chat-history.db
+    - ~/.local/share/opencode/opencode.db
+    - ~/.config/opencode/opencode.db
+    - ~/.hermes/sessions
+    - ~/.hermes/.hermes_history
+    - ~/.claude
+    - ~/.aws/credentials
+    - ~/.aws/config
+    - ~/.aws/cli/cache
+    - ~/.config/gcloud/credentials.db
+    - ~/.config/gcloud/access_tokens.db
+    - ~/.config/gcloud/configurations/config_default
+    - ~/.azure/azureProfile.json
+    - ~/.azure/clouds.config
+    - ~/.azure/config
+    - ~/.azure/msal_token_cache.json
+    - ~/.docker/config.json
+    - ~/.dockercfg
+    - ~/.kube/config
+    - ~/.ssh
+    - ~/.netrc
+    - ~/.config/doctl/config.yaml
+    - ~/.terraform.d/credentials.tfrc.json
+    - ~/.gitconfig
+    - ~/.npmrc
+  note: >
+    The advisory names files, not keys. Anything inside those files counts as
+    exposed, including keys keydrift has no rule for.
+actions:
+  - Do not run the binary again. Delete it and install v0.16.0 or later.
+  - Rotate from a different, clean machine.
+  - Look for envchecker-<digits> folders in your temp folder; they show what was copied.
+  - Check for outbound traffic to 45.32.148.174 and the Solana RPC hosts in the advisory.
